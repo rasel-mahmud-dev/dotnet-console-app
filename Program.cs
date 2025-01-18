@@ -1,11 +1,14 @@
 ﻿namespace HelloApp{
     class Program{
         static void Main(string[] args){
-            var mouseTracker = new MouseTracker();
-            mouseTracker.StartTracking();
+            
+            TcpClientApp.Run(args);
 
-            Console.WriteLine("Press Ctrl+C to exit.");
-            Thread.Sleep(Timeout.Infinite);
+            // var mouseTracker = new MouseTracker();
+            // mouseTracker.StartTracking();
+            //
+            // Console.WriteLine("Press Ctrl+C to exit.");
+            // Thread.Sleep(Timeout.Infinite);
         }
     }
-}g
+}
