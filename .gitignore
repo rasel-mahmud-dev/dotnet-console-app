@@ -1,0 +1,58 @@
+# Build files
+bin/
+obj/
+
+# Rider IDE files
+.idea/
+*.sln.iml
+
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.userprefs
+
+# Logs
+*.log
+
+# Generated files
+*.Generated/
+*.Generated.cs
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# NuGet Packages
+*.nupkg
+packages/
+
+# Dotnet tools
+.dotnet_tool/
+
+# Environment variables
+.env
+.env.*
+
+# Rider's workspace files
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries
+.idea/modules.xml
+
+# Other IDE files
+.vscode/
+*.vs/
+
+# Coverage and reports
+coverage/
+*.coverage
+*.coveragexml
+*.testsettings
+*.vsmdi
+TestResult.xml
+TestResults/
+
+# Temporary files
+*.tmp
+*.temp
