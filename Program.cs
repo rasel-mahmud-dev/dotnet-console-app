@@ -1,19 +1,46 @@
-﻿namespace HelloApp{
-    class App{
+﻿using System.Runtime.InteropServices;
+
+namespace HelloApp{
+    class Program{
+        [DllImport("libX11.so")]
+        private static extern IntPtr XOpenDisplay(string display);
+
+        [DllImport("libX11.so")]
+        private static extern int XQueryPointer(
+            IntPtr display, IntPtr window,
+            out IntPtr root_return, out IntPtr child_return,
+            out int root_x, out int root_y,
+            out int win_x, out int win_y,
+            out uint mask_return
+        );
+
+        [DllImport("libX11.so")]
+        private static extern IntPtr XDefaultRootWindow(IntPtr display);
+
+        [DllImport("libX11.so")]
+        private static extern int XCloseDisplay(IntPtr display);
+
         static void Main(string[] args){
-            Console.WriteLine("Welcome to your C# Console Application!");
+            IntPtr display = XOpenDisplay(null);
+            if (display == IntPtr.Zero){
+                Console.WriteLine("Unable to open display. Are you running a graphical environment?");
+                return;
+            }
 
-            // Configure the server with IP and port
-            TcpServer server = new TcpServer("127.0.0.1", 5000);
+            IntPtr rootWindow = XDefaultRootWindow(display);
+            Console.WriteLine("Tracking mouse movement. Press Ctrl+C to exit.");
 
-            // Start the server
-            server.Start();
+            while (true){
+                if (XQueryPointer(display, rootWindow, out _, out _, out int rootX, out int rootY, out _, out _,
+                        out _) != 0){
+                    Console.Clear();
+                    Console.WriteLine($"Mouse Position: X = {rootX}, Y = {rootY}");
+                }
 
-            Console.WriteLine("Press any key to stop the server...");
-            Console.ReadKey();
+                Thread.Sleep(100); // Delay to prevent excessive CPU usage
+            }
 
-            // Stop the server
-            server.Stop();
+            XCloseDisplay(display);
         }
     }
 }
