@@ -1,29 +1,39 @@
-﻿using System.Net.Sockets;
-using System.Threading.Tasks;
+﻿using System;
+using System.Runtime.InteropServices;
 
 namespace HelloApp{
     class Program{
-        static async Task Main(string[] args){
-            string serverAddress = "127.0.0.1";
-            int serverPort = 12345;
+        private const string X11Library = "libX11.so.6";
 
-            // var mouseTracker = new MouseTracker();
-            var mouseClickTracker = new MouseClickTracker();
+        [DllImport(X11Library)]
+        private static extern IntPtr XOpenDisplay(IntPtr display);
 
-            try{
-                // Start the TCP client and get the NetworkStream
-                // NetworkStream stream = TcpClientApp.StartTcpClient(serverAddress, serverPort);
+        [DllImport(X11Library)]
+        private static extern int XCloseDisplay(IntPtr display);
 
-                // var mouseTrackerTask = Task.Run(() => mouseTracker.StartTracking(stream));
-                var mouseClickTracker2 = Task.Run(() => mouseClickTracker.StartTracking());
+        [DllImport(X11Library)]
+        private static extern int XWarpPointer(IntPtr display, IntPtr srcWindow, IntPtr destWindow, int srcX, int srcY,
+            uint srcWidth, uint srcHeight, int destX, int destY);
 
-                Console.WriteLine("Press Ctrl+C to exit.");
-                // await mouseTrackerTask;
-                await mouseClickTracker2;
+        [DllImport(X11Library)]
+        private static extern int XFlush(IntPtr display);
+
+        static void Main(string[] args){
+            IntPtr display = XOpenDisplay(IntPtr.Zero);
+            if (display == IntPtr.Zero){
+                Console.WriteLine("Unable to open X11 display.");
+                return;
             }
-            catch (Exception ex){
-                Console.WriteLine($"Error: {ex.Message}");
+
+            while (true){
+                // Example: Move the mouse to coordinates (100, 100)
+                XWarpPointer(display, IntPtr.Zero, IntPtr.Zero, 0, 0, 0, 0, 100, 100);
+                XFlush(display);
+                Console.WriteLine("Mouse moved to (100, 100).");
+                Thread.Sleep(1000);
             }
+
+            XCloseDisplay(display);
         }
     }
 }
